@@ -18,7 +18,7 @@ public class StringRangeValidator implements ConstraintValidator<StringRange, St
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return value == null || Arrays.stream(values).anyMatch(value::equals);
+        return value == null || Arrays.asList(values).contains(value);
     }
 
 }
