@@ -16,7 +16,7 @@ import org.hibernate.validator.constraints.URL;
 
 public class User {
 
-    @NotNull(message = "user.name.empty")
+    @NotNull(message = "{user.name.empty}")
     @Size(min = 5, max = 50, message = "user.name.size")
     private String name;
 

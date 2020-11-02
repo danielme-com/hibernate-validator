@@ -3,9 +3,7 @@ package com.danielme.blog.validation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -20,14 +18,34 @@ import com.danielme.blog.validation.model.AddressWithGroup.NoCountry;
 
 public class ValidatorTest {
 
-    private Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @Test
     public void testEmpty() {
         Set<ConstraintViolation<User>> violations = validator.validate(new User());
         assertEquals(4, violations.size());
-        violations.stream().forEach(v -> System.out.println(
+        violations.forEach(v -> System.out.println(
                 v.getPropertyPath() + " : " + v.getMessageTemplate() + " = " + v.getMessage()));
+    }
+
+    @Test
+    public void testDefaultLanguage() {
+        Locale.setDefault(Locale.ENGLISH);
+        ResourceBundle rb = ResourceBundle.getBundle("ValidationMessages");
+
+        Set<ConstraintViolation<User>> violations = validator.validate(new User());
+
+        assertTrue(violations.stream().anyMatch(v->v.getMessage().equals(rb.getString("user.name.empty"))));
+    }
+
+    @Test
+    public void testEsLanguage() {
+        Locale.setDefault(new Locale("es"));
+        ResourceBundle rb = ResourceBundle.getBundle("ValidationMessages_es");
+
+        Set<ConstraintViolation<User>> violations = validator.validate(new User());
+
+        assertTrue(violations.stream().anyMatch(v->v.getMessage().equals(rb.getString("user.name.empty"))));
     }
 
     @Test
@@ -43,8 +61,7 @@ public class ValidatorTest {
         user.setAddress(address);
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertEquals(3, violations.size());
-        violations.stream()
-                .forEach(v -> System.out.println(v.getPropertyPath() + " : " + v.getMessage()));
+        violations.forEach(v -> System.out.println(v.getPropertyPath() + " : " + v.getMessage()));
     }
 
     @Test
@@ -84,8 +101,7 @@ public class ValidatorTest {
         AddressWithGroup address = new AddressWithGroup();
         Set<ConstraintViolation<AddressWithGroup>> violations = validator.validate(address);
         assertEquals(3, violations.size());
-        violations.stream()
-                .forEach(v -> System.out.println(v.getPropertyPath() + " : " + v.getMessage()));
+        violations.forEach(v -> System.out.println(v.getPropertyPath() + " : " + v.getMessage()));
     }
     
     @Test
@@ -93,8 +109,7 @@ public class ValidatorTest {
         AddressWithGroup address = new AddressWithGroup();
         Set<ConstraintViolation<AddressWithGroup>> violations = validator.validate(address, NoCountry.class);
         assertEquals(2, violations.size());
-        violations.stream()
-                .forEach(v -> System.out.println(v.getPropertyPath() + " : " + v.getMessage()));
+        violations.forEach(v -> System.out.println(v.getPropertyPath() + " : " + v.getMessage()));
     }
 
     private User buildValidUser() {
