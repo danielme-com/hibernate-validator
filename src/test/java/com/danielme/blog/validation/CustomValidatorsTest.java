@@ -15,7 +15,7 @@ import com.danielme.blog.validation.model.CustomValidators;
 
 public class CustomValidatorsTest {
 
-    private Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @Test
     public void testDummyNoOk() {
